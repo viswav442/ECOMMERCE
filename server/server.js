@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   mongoose
     .connect(
-      "mongodb+srv://viswa9167:baY8AMDowswnM0j2@ecommerce.sl4ie.mongodb.net/"
+      `mongodb+srv://viswa9167:${process.env.MONGODB_PASSWORD}@ecommerce.sl4ie.mongodb.net/`
     )
     .then(() => {
       console.log("Database Connnected");
