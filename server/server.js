@@ -1,34 +1,29 @@
-import express from "express";
-import mongoose from "mongoose";
-import cors from "cors";
-import cookieParser from "cookie-parser";
+const express = require("express");
+const mongoose = require("mongoose");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
+const authRouter = require("./routes/auth/auth-routes");
+//create a database connection -> u can also
+//create a separate file for this and then import/use that file here
+
+mongoose
+  .connect(
+    `mongodb+srv://viswa:Viswa123@ecommerce.sl4ie.mongodb.net/`
+  )
+  .then(() => console.log("MongoDB connected"))
+  .catch((error) => console.log(error));
 
 const app = express();
-
-const PORT = process.env.PORT || 4000;
-
-app.listen(PORT, () => {
-  mongoose
-    .connect(
-      `mongodb+srv://viswa9167:${process.env.MONGODB_PASSWORD}@ecommerce.sl4ie.mongodb.net/`
-    )
-    .then(() => {
-      console.log("Database Connnected");
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  console.log("server is listening on port 4000");
-});
+const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: "http://http://localhost:5173/",
+    origin: "http://localhost:5173",
     methods: ["GET", "POST", "DELETE", "PUT"],
     allowedHeaders: [
-      "Content-type",
+      "Content-Type",
       "Authorization",
-      "Cache-control",
+      "Cache-Control",
       "Expires",
       "Pragma",
     ],
@@ -38,3 +33,8 @@ app.use(
 
 app.use(cookieParser());
 app.use(express.json());
+app.use("/api/auth", authRouter);
+
+app.listen(PORT, () => console.log(`Server is now running on port ${PORT}`));
+
+//

@@ -15,12 +15,33 @@ import ShoppingHome from "./pages/shopping-view/home";
 import ShoppingListing from "./pages/shopping-view/listing";
 import ShoppingCheckout from "./pages/shopping-view/checkout";
 import ShoppingAccount from "./pages/shopping-view/account";
+import CheckAuth from "./components/common/check-auth";
+import UnAuth from "./pages/un-auth";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { checkAuth } from "./store/auth-slice";
+import { Skeleton } from "./components/ui/skeleton";
 
 function App() {
+  const { user, isAuthenticated, isLoading } = useSelector(
+    (state) => state.auth
+  );
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, [dispatch]);
+
+  if (isLoading) return <Skeleton className="w-[800] bg-black h-[600px]" />;
+
   const router = createBrowserRouter([
     {
       path: "/auth",
-      element: <Authlayout />,
+      element: (
+        <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+          <Authlayout />
+        </CheckAuth>
+      ),
       children: [
         {
           path: "login",
@@ -34,7 +55,11 @@ function App() {
     },
     {
       path: "/admin",
-      element: <AdminLayout />,
+      element: (
+        <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+          <AdminLayout />
+        </CheckAuth>
+      ),
       children: [
         {
           path: "dashboard",
@@ -55,8 +80,12 @@ function App() {
       ],
     },
     {
-      path: "shop",
-      element: <ShoppingLayout />,
+      path: "/shop",
+      element: (
+        <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+          <ShoppingLayout />
+        </CheckAuth>
+      ),
       children: [
         {
           path: "home",
@@ -75,6 +104,10 @@ function App() {
           element: <ShoppingAccount />,
         },
       ],
+    },
+    {
+      path: "/unauth-page",
+      element: <UnAuth />,
     },
     {
       path: "*",
