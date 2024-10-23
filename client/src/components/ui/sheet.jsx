@@ -13,30 +13,20 @@ const SheetClose = SheetPrimitive.Close;
 
 const SheetPortal = SheetPrimitive.Portal;
 
-const SheetOverlay = React.forwardRef(({ className, side, ...props }, ref) => {
-  // Dynamically adjust overlay based on the sheet's side
-  const overlayClasses = {
-    right: "inset-0 left-auto w-screen", // Don't overlay on the sheet's side
-    left: "inset-0 right-auto w-screen", // Don't overlay on the sheet's side
-    top: "inset-0 bottom-auto h-screen", // Don't overlay on the sheet's side
-    bottom: "inset-0 top-auto h-screen", // Don't overlay on the sheet's side
-  };
-
-  return (
-    <SheetPrimitive.Overlay
-      className={cn(
-        `fixed z-40 bg-black/50 transition-opacity ${overlayClasses[side]}`,
-        className
-      )}
-      {...props}
-      ref={ref}
-    />
-  );
-});
+const SheetOverlay = React.forwardRef(({ className, ...props }, ref) => (
+  <SheetPrimitive.Overlay
+    className={cn(
+      "fixed inset-0  data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+      className
+    )}
+    {...props}
+    ref={ref}
+  />
+));
 SheetOverlay.displayName = SheetPrimitive.Overlay.displayName;
 
 const sheetVariants = cva(
-  "fixed z-50 gap-4 bg-background p-6 shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-500",
+  " fixed z-50 gap-4 bg-background p-6 shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-500",
   {
     variants: {
       side: {
@@ -57,10 +47,15 @@ const sheetVariants = cva(
 const SheetContent = React.forwardRef(
   ({ side = "right", className, children, ...props }, ref) => (
     <SheetPortal>
-      <SheetOverlay side={side} />
+      <SheetOverlay />
       <SheetPrimitive.Content
         ref={ref}
-        className={cn(sheetVariants({ side }), "z-50", className)} // Ensure z-index is higher than overlay
+        className={cn(
+          sheetVariants({ side }),
+          className,
+          "backdrop-filter-none",
+          "overflow-y-auto"
+        )}
         {...props}
       >
         {children}

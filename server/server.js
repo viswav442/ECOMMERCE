@@ -3,13 +3,12 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const authRouter = require("./routes/auth/auth-routes");
+const adminProductsRouter = require("./routes/admin/products-routes");
 //create a database connection -> u can also
 //create a separate file for this and then import/use that file here
 
 mongoose
-  .connect(
-    `mongodb+srv://viswa:Viswa123@ecommerce.sl4ie.mongodb.net/`
-  )
+  .connect(`mongodb+srv://viswa:Viswa123@ecommerce.sl4ie.mongodb.net/`)
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log(error));
 
@@ -34,6 +33,7 @@ app.use(
 app.use(cookieParser());
 app.use(express.json());
 app.use("/api/auth", authRouter);
+app.use("/api/admin/products", adminProductsRouter);
 
 app.listen(PORT, () => console.log(`Server is now running on port ${PORT}`));
 
